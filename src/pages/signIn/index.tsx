@@ -1,33 +1,37 @@
-import React, { FunctionComponent, useContext, useState } from 'react'
+import React, {
+  FunctionComponent,
+  useContext,
+  useState,
+} from 'react'
 import { RouteComponentProps, Redirect } from '@reach/router'
-import { AuthContext } from '../../contexts/auth'
+import { AuthContext, Auth } from '../../contexts/auth'
 
 const SignIn: FunctionComponent<RouteComponentProps> = () => {
-  const { authenticated, setAuth } = useContext(AuthContext)
+  const { auth, setSuccessful } = useContext(AuthContext)
 
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  if (authenticated) {
-    return <Redirect to="/me" noThrow />
+  const externalLogin = async () => {
+    setSuccessful({
+      token: '123',
+      authorized: true,
+      userId: '123',
+      username: 'test-user',
+      isAdmin: false,
+    })
   }
 
-  const disabled = username.length === 0 || password.length === 0
+  if (auth.authorized) {
+    return <Redirect to="/me" noThrow />
+  }
 
   return (
     <>
       <h1>SignIn</h1>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button disabled={disabled} onClick={() => setAuth(true)}>Go!</button>
+      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={()=> externalLogin()}>Click to login</button>
     </>
   )
 }

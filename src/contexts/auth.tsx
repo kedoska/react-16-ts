@@ -1,24 +1,69 @@
-import React from 'react'
+import React, { useReducer } from 'react'
 
-export interface UserContext {
-  authenticated: boolean
-  setAuth(authenticated: boolean): void
+export type Auth = {
+  token: string
+  authorized: boolean
+  userId: string
+  username: string
+  isAdmin: boolean
 }
 
-export const AuthContext = React.createContext<UserContext>({
-  authenticated: false,
-  setAuth: () => {
-    throw new Error('Not Yet Implemented')
-  },
+export const getDefaultState = (): Auth => ({
+  token: '',
+  authorized: false,
+  userId: '',
+  username: '',
+  isAdmin: false,
 })
 
+export interface AuthContextInterface {
+  auth: Auth
+  dispatch: React.Dispatch<ActionType>
+  setSuccessful: (payload: Auth) => void
+  reset: () => void
+}
+
+const nyi = () => {
+  throw new Error('Not Yet Implemented')
+}
+
+export const AuthContext = React.createContext<AuthContextInterface>({
+  auth: getDefaultState(),
+  dispatch: () => nyi(),
+  setSuccessful: (payload: Auth) => nyi(),
+  reset: () => nyi(),
+})
+
+export type ActionType = {
+  type: 'RESET' | 'AUTH_OK'
+  payload: Auth
+}
+
+export const reducer = (state: Auth, action: ActionType): Auth => {
+  switch (action.type) {
+    case 'RESET': // 🔴
+      return action.payload
+    case 'AUTH_OK': // 🟢
+      return action.payload
+    default:
+      return state
+  }
+}
+
 const AuthProvider: React.FC = (props) => {
-  const [authenticated, setAuth] = React.useState(false)
+  const [auth, dispatch] = useReducer(reducer, getDefaultState())
+
+  const setSuccessful = (payload: Auth) =>
+    dispatch({ type: 'AUTH_OK', payload })
+  const reset = () => dispatch({ type: 'RESET', payload: getDefaultState() })
+
   return (
     <AuthContext.Provider
       value={{
-        authenticated,
-        setAuth,
+        auth,
+        dispatch,
+        setSuccessful,
+        reset,
       }}
     >
       {props.children}

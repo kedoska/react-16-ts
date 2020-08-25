@@ -5,9 +5,9 @@ import { RouteComponentProps, Redirect } from '@reach/router'
 import Header from '../../components/hadear'
 
 const Account: React.FC<RouteComponentProps> = ({ children }) => {
-  const { authenticated = false } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
 
-  if (!authenticated) {
+  if (!auth.authorized) {
     return <Redirect to="/sign-in" noThrow />
   }
 

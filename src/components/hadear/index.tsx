@@ -3,12 +3,13 @@ import { Link } from '@reach/router'
 import { AuthContext } from '../../contexts/auth'
 
 const Header: React.FC<{}> = () => {
-  const { setAuth } = useContext(AuthContext)
+  const { auth, reset } = useContext(AuthContext)
 
   return (
     <div className="header">
       <div className="left">
         <ul>
+          <li>{auth.userId}</li>
           <li>
             <Link to="setting">Settings</Link>
           </li>
@@ -20,7 +21,7 @@ const Header: React.FC<{}> = () => {
       <div className="right">
         <ul>
           <li>
-            <button onClick={() => setAuth(false)}>Log out</button>
+            <button onClick={reset}>Log out</button>
           </li>
         </ul>
       </div>
